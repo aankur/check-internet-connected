@@ -44,6 +44,6 @@ async function checkInternetConnected (config = {}) {
       }
     }
   }
-  return lastErrorV4;
+  throw lastErrorV4;
 }
 module.exports = checkInternetConnected;
