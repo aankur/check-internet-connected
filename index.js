@@ -15,15 +15,16 @@ async function checkInternetConnected (config = {}) {
   for (let i = 0; i < retries; i++) {
     let result4 = null;
     let result6 = null;
-
+    let promise4 = resolve4(hostname).timeout(timeout);
+    let promise6 = resolve6(hostname).timeout(timeout);
     try {
-      result4 = await resolve4(hostname).timeout(timeout);
+      result4 = await promise4;
     } catch (ex) {
       lastErrorV4 = ex;
     }
 
     try {
-      result6 = await resolve6(hostname).timeout(timeout);
+      result6 = await promise6;
     } catch (ex) {
       /* swallow up v6 errors for now */
     }
