@@ -17,6 +17,9 @@ async function checkInternetConnected (config = {}) {
     let result6 = null;
     let promise4 = resolve4(hostname).timeout(timeout);
     let promise6 = resolve6(hostname).timeout(timeout);
+    promise4.catch(() => {});
+    promise6.catch(() => {});
+
     try {
       result4 = await promise4;
     } catch (ex) {
