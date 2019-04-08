@@ -1,52 +1,52 @@
 const url = require('url');
 const Promise = require('bluebird');
+const net = require('net');
+
+Promise.config({
+  cancellation: true
+});
 
 async function checkInternetConnected (config = {}) {
-  const {timeout = 5000, retries = 5, domain = 'apple.com', servers} = config;
-  const dns = require('dns');
-  if (servers) {
-    dns.setServers(servers);
-  }
+  const {timeout = 5000, retries = 5, domain = 'https://apple.com'} = config;
   const urlInfo = url.parse(domain);
+  if (urlInfo.port === null) {
+    if (urlInfo.protocol === 'ftp') {
+      urlInfo.port = '21';
+    } else if (urlInfo.protocol === 'http') {
+      urlInfo.port = '80';
+    } else if (urlInfo.protocol === 'https') {
+      urlInfo.port = '443';
+    }
+  }
+  const defaultPort = Number.parseInt(urlInfo.port || '80');
   const hostname = urlInfo.hostname || urlInfo.pathname;
-  let lastErrorV4 = false;
-  const resolve4 = Promise.promisify(dns.resolve4);
-  const resolve6 = Promise.promisify(dns.resolve6);
   for (let i = 0; i < retries; i++) {
-    let result4 = null;
-    let result6 = null;
-    let promise4 = resolve4(hostname).timeout(timeout);
-    let promise6 = resolve6(hostname).timeout(timeout);
-    promise4.catch(() => {});
-    promise6.catch(() => {});
+    const connectPromise = new Promise(function (resolve, reject, onCancel) {
+      const client = new net.Socket();
+      client.connect({ port: defaultPort, host: hostname }, () => {
+        client.destroy();
+        resolve(true);
+      });
+      client.on('data', (data) => {
+      });
+      client.on('error', (err) => {
+        reject(err);
+      });
+      client.on('close', () => {
+      });
 
+      onCancel(() => {
+        client.destroy();
+      });
+    });
     try {
-      result4 = await promise4;
+      await connectPromise.timeout(timeout);
     } catch (ex) {
-      lastErrorV4 = ex;
-    }
-
-    try {
-      result6 = await promise6;
-    } catch (ex) {
-      /* swallow up v6 errors for now */
-    }
-
-    if (result4 && result6) {
-      result4.push(...result6);
-      return result4;
-    } else if (result4) {
-      return result4;
-    } else if (result6) {
-      return result6;
-    }
-
-    if (!(result4 || result6)) {
-      if (i !== (retries - 1)) {
-        await Promise.delay(timeout);
+      if (i === (retries - 1)) {
+        throw ex;
       }
     }
   }
-  throw lastErrorV4;
 }
+
 module.exports = checkInternetConnected;
