@@ -30,6 +30,7 @@ async function checkInternetConnected (config = {}) {
       client.on('data', (data) => {
       });
       client.on('error', (err) => {
+        client.destroy();
         reject(err);
       });
       client.on('close', () => {
@@ -42,6 +43,7 @@ async function checkInternetConnected (config = {}) {
     try {
       await connectPromise.timeout(timeout);
     } catch (ex) {
+      console.log(ex);
       if (i === (retries - 1)) {
         throw ex;
       }
