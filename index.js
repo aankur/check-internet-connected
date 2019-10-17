@@ -10,11 +10,11 @@ async function checkInternetConnected (config = {}) {
   const {timeout = 5000, retries = 5, domain = 'https://apple.com'} = config;
   const urlInfo = url.parse(domain);
   if (urlInfo.port === null) {
-    if (urlInfo.protocol === 'ftp') {
+    if (urlInfo.protocol === 'ftp:') {
       urlInfo.port = '21';
-    } else if (urlInfo.protocol === 'http') {
+    } else if (urlInfo.protocol === 'http:') {
       urlInfo.port = '80';
-    } else if (urlInfo.protocol === 'https') {
+    } else if (urlInfo.protocol === 'https:') {
       urlInfo.port = '443';
     }
   }
