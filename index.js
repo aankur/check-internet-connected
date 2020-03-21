@@ -43,7 +43,6 @@ async function checkInternetConnected (config = {}) {
     try {
       await connectPromise.timeout(timeout);
     } catch (ex) {
-      console.log(ex);
       if (i === (retries - 1)) {
         throw ex;
       }
