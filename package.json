@@ -1,6 +1,6 @@
 {
   "name": "check-internet-connected",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Utility to check if internet is connected or not",
   "main": "index.js",
   "scripts": {
