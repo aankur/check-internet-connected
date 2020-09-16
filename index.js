@@ -1,13 +1,39 @@
 const url = require('url');
 const Promise = require('bluebird');
 const net = require('net');
+const os = require('os');
 
 Promise.config({
   cancellation: true
 });
 
-async function checkInternetConnected (config = {}) {
-  const {timeout = 5000, retries = 5, domain = 'https://apple.com'} = config;
+/**
+ * @Laurix1983 added
+ * Helper function to try to search interface address
+ */
+function getInterfaceAddress(intr, family) {
+
+
+  const allInterfaces = os.networkInterfaces();
+
+  const foundIf = allInterfaces[intr];
+  if (foundIf) {
+    if (!family)
+      family = 'IPv4'
+    const foundFamily = foundIf.find(f => f.family == family)
+    if (foundFamily.address)
+      return foundFamily.address;
+
+
+
+  }
+
+  return null;
+
+}
+
+async function checkInternetConnected(config = {}) {
+  const { timeout = 5000, retries = 5, domain = 'https://apple.com', network_interface = undefined, family = undefined } = config;
   const urlInfo = url.parse(domain);
   if (urlInfo.port === null) {
     if (urlInfo.protocol === 'ftp:') {
@@ -23,7 +49,18 @@ async function checkInternetConnected (config = {}) {
   for (let i = 0; i < retries; i++) {
     const connectPromise = new Promise(function (resolve, reject, onCancel) {
       const client = new net.Socket();
-      client.connect({ port: defaultPort, host: hostname }, () => {
+
+      const connectParams = { port: defaultPort, host: hostname };
+      // @Laurix1983 Added capability to use specific network interface for connection check
+      if (network_interface) {
+        const lAddress = getInterfaceAddress(network_interface, family);
+        if (lAddress)
+          connectParams.localAddress = lAddress;
+        else
+          reject('Network interface: ' + network_interface + ' not found, canceling test')
+
+      }
+      client.connect(connectParams, () => {
         client.destroy();
         resolve(true);
       });
