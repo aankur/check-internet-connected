@@ -8,7 +8,8 @@ Promise.config({
 });
 
 /**
- * Helpeer function to try to search interface address
+ * @Laurix1983 added
+ * Helper function to try to search interface address
  */
 function getInterfaceAddress(intr, family) {
 
@@ -50,11 +51,13 @@ async function checkInternetConnected(config = {}) {
       const client = new net.Socket();
 
       const connectParams = { port: defaultPort, host: hostname };
-      // Added capability to use specific network interface for connection check
+      // @Laurix1983 Added capability to use specific network interface for connection check
       if (network_interface) {
         const lAddress = getInterfaceAddress(network_interface, family);
         if (lAddress)
           connectParams.localAddress = lAddress;
+        else
+          reject('Network interface: ' + network_interface + ' not found, canceling test')
 
       }
       client.connect(connectParams, () => {
