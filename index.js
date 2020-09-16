@@ -10,7 +10,7 @@ Promise.config({
 /**
  * Helpeer function to try to search interface address
  */
-getInterfaceAddress((intr, family) => {
+function getInterfaceAddress(intr, family) {
 
 
   const allInterfaces = os.networkInterfaces();
@@ -29,7 +29,7 @@ getInterfaceAddress((intr, family) => {
 
   return null;
 
-})
+}
 
 async function checkInternetConnected(config = {}) {
   const { timeout = 5000, retries = 5, domain = 'https://apple.com', network_interface = undefined, family = undefined } = config;
