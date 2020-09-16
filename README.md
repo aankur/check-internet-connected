@@ -23,8 +23,8 @@ const config = {
   timeout: 5000, //timeout connecting to each server, each try
   retries: 5,//number of retries to do before failing
   domain: 'https://apple.com',//the domain to check DNS record of
-  network_interface = undefined, // If specified uses specific network interface such as eth1
-  family = 'IPv4' // In case network_interface is specified which address family to use
+  network_interface : undefined, // If specified uses specific network interface such as eth1 for connection tests
+  family : 'IPv4' // In case network_interface is specified which address family to use
 }
 checkInternetConnected(config);
 ```
