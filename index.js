@@ -7,7 +7,7 @@ Promise.config({
 });
 
 async function checkInternetConnected (config = {}) {
-  const {timeout = 5000, retries = 5, domain = 'https://apple.com'} = config;
+  const { timeout = 5000, retries = 5, domain = 'https://apple.com' } = config;
   const urlInfo = url.parse(domain);
   if (urlInfo.port === null) {
     if (urlInfo.protocol === 'ftp:') {
@@ -41,7 +41,7 @@ async function checkInternetConnected (config = {}) {
       });
     });
     try {
-      await connectPromise.timeout(timeout);
+      return await connectPromise.timeout(timeout);
     } catch (ex) {
       if (i === (retries - 1)) {
         throw ex;
