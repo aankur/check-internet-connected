@@ -1,0 +1,38 @@
+name: check-internet-connected
+
+on: [push, pull_request]
+
+jobs:
+  ci:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-20.04
+        node:
+          - 8
+          - 10
+          - 12
+          - 14
+          - 16
+          - 18
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Configure cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+          key: ${{ matrix.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ matrix.os }}-node-
+      - run: npm install
+      - run: npm run test
