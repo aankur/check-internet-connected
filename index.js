@@ -78,7 +78,7 @@ async function checkInternetConnected(config = {}) {
       });
     });
     try {
-      await connectPromise.timeout(timeout);
+      return await connectPromise.timeout(timeout);
     } catch (ex) {
       if (i === (retries - 1)) {
         throw ex;
