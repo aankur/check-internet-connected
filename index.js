@@ -8,6 +8,7 @@ Promise.config({
 
 async function checkInternetConnected (config = {}) {
   const { timeout = 5000, retries = 5, domain = 'https://apple.com' } = config;
+  // eslint-disable-next-line node/no-deprecated-api
   const urlInfo = url.parse(domain);
   if (urlInfo.port === null) {
     if (urlInfo.protocol === 'ftp:') {
