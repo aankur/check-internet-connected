@@ -28,7 +28,8 @@
   "author": "Ankur Deep Jaiswal <ankur@techgentsia.com>",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.7.2"
+    "bluebird": "^3.7.2",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "semistandard": "^14.2.3"
